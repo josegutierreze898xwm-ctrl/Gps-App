@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:share_plus/share_plus.dart';
 
 class GpsPantall extends StatefulWidget {
   const GpsPantall({super.key});
@@ -81,6 +82,29 @@ LocationPermission tengoPermisos;
  miMapcontroller.move(ubicacionInicail, 16.0);
  }
 
+ void compartirUbicacion(){
+  if(!tieneUbicacion){
+    setState(() {
+      mensaje='Primero debes obtener una ubuicación antes de compartir';
+    });
+    return;
+  }
+  final String textoParacompartir=
+  'Hola esta es mi ubicación\n'
+  'desde mi App\n'
+  'Latitud $latitud\n'
+  'longitud $longitud\n\n'
+  'José Gutiérrez';
+
+  SharePlus.instance.share(
+    ShareParams(
+      text: textoParacompartir,
+      subject: 'Mi ubicación GPS',
+    )
+  );
+ }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,16 +166,25 @@ LocationPermission tengoPermisos;
         SizedBox(height: 15,),
 
 
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.black,
-            foregroundColor: Colors.white
-          ),
-          onPressed: obtenerUbicacion, 
-          child: Text('Obtener Ubicación'))
-
-
-
+        Row(
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white
+              ),
+              onPressed: obtenerUbicacion, 
+              child: Text('Obtener Ubicación')),
+              
+              ElevatedButton(
+                onPressed: compartirUbicacion,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white
+                ), 
+                child: Icon(Icons.share_rounded)),
+          ],
+        )
 
       ],
            ) )
